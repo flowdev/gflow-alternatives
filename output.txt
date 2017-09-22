@@ -1,0 +1,31 @@
+ERROR: Its time for an error: 1
+Going lower: 2
+ERROR: Its time for an error: 2
+Going upper: 3
+reached last op: 3
+ERROR: Its time for an error: 4
+Going upper: 5
+ERROR: Its time for an error: 5
+Going lower: 6
+reached last op: 6
+ERROR: Its time for an error: 7
+Going lower: 8
+ERROR: Its time for an error: 8
+Going upper: 9
+reached last op: 9
+ERROR: Its time for an error: 10
+Going upper: 11
+ERROR: Its time for an error: 11
+Going lower: 12
+reached last op: 12
+ERROR: Its time for an error: 13
+Going lower: 14
+ERROR: Its time for an error: 14
+Going upper: 15
+reached last op: 15
+ERROR: Its time for an error: 16
+Going upper: 17
+ERROR: Its time for an error: 17
+Going lower: 18
+reached last op: 18
+ERROR: Its time for an error: 19
