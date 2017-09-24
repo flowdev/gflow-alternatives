@@ -18,9 +18,8 @@ func firstOp(i int) error {
 	}
 	if (i & 1) != 0 {
 		return upperOp(i)
-	} else {
-		return lowerOp(i)
 	}
+	return lowerOp(i)
 }
 
 func upperOp(i int) error {
