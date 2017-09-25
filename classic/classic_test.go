@@ -1,7 +1,6 @@
-package main
+package classic
 
 import (
-	"errors"
 	"testing"
 )
 
@@ -151,8 +150,8 @@ func tenOp(i int) (int, error) {
 }
 
 func singleOp(i int) (int, error) {
-	if i < 0 || i > 1000000 {
-		return 0, errors.New("should not happen")
-	}
+	//if i < 0 || i > 1000000 {
+	//	return 0, errors.New("should not happen")
+	//}
 	return i + 1, nil
 }
