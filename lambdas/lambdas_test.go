@@ -1,6 +1,7 @@
 package classic
 
 import (
+	"errors"
 	"testing"
 )
 
@@ -56,10 +57,10 @@ func newTenOp(out func(int), handleError func(error)) (in func(int)) {
 
 func newSingleOp(out func(int), handleError func(error)) (in func(int)) {
 	in = func(i int) {
-		//if i < 0 || i > 1000000 {
-		//	handleError(errors.New("should not happen"))
-		//	return
-		//}
+		if i < 0 || i > 1000000 {
+			handleError(errors.New("should not happen"))
+			return
+		}
 		out(i + 1)
 	}
 	return
