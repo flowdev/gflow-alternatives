@@ -1,0 +1,6 @@
+goos: linux
+goarch: amd64
+pkg: github.com/flowdev/gflow-alternatives/oopmix
+BenchmarkOOPMix1000-8   	  200000	      7286 ns/op
+PASS
+ok  	github.com/flowdev/gflow-alternatives/oopmix	1.542s

@@ -1,0 +1,6 @@
+goos: linux
+goarch: amd64
+pkg: github.com/flowdev/gflow-alternatives/lambdas
+BenchmarkLambdas1000-8   	  500000	      3446 ns/op
+PASS
+ok  	github.com/flowdev/gflow-alternatives/lambdas	1.765s

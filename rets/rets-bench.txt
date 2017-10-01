@@ -1,0 +1,7 @@
+goos: linux
+goarch: amd64
+pkg: github.com/flowdev/gflow-alternatives/rets
+BenchmarkRets1000-8          	  300000	      3945 ns/op
+BenchmarkIllegalRets1000-8   	  300000	      3909 ns/op
+PASS
+ok  	github.com/flowdev/gflow-alternatives/rets	2.448s
