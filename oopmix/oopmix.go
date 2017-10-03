@@ -2,45 +2,36 @@ package oopmix
 
 import (
 	"errors"
-	"testing"
 )
 
-// BenchmarkOOPMix1000 benchmarks the implementation of the thousandOp that uses a mix of OOP things.
-func BenchmarkOOPMix1000(b *testing.B) {
-	thousandOp := newThousandOp()
-	thousandOp.SetOutPort(func(i int) {})
-	thousandOp.SetErrorPort(func(err error) {})
-	for n := 0; n < b.N; n++ {
-		thousandOp.InPort(0)
-	}
-}
-
-type thousandOp struct {
+// ThousandOp holds the data necessary to call ten HunredOps.
+type ThousandOp struct {
 	InPort func(int)
-	op1    *hundredOp
-	op2    *hundredOp
-	op3    *hundredOp
-	op4    *hundredOp
-	op5    *hundredOp
-	op6    *hundredOp
-	op7    *hundredOp
-	op8    *hundredOp
-	op9    *hundredOp
-	op10   *hundredOp
+	op1    *HundredOp
+	op2    *HundredOp
+	op3    *HundredOp
+	op4    *HundredOp
+	op5    *HundredOp
+	op6    *HundredOp
+	op7    *HundredOp
+	op8    *HundredOp
+	op9    *HundredOp
+	op10   *HundredOp
 }
 
-func newThousandOp() *thousandOp {
-	o := &thousandOp{
-		op1:  newHundredOp(),
-		op2:  newHundredOp(),
-		op3:  newHundredOp(),
-		op4:  newHundredOp(),
-		op5:  newHundredOp(),
-		op6:  newHundredOp(),
-		op7:  newHundredOp(),
-		op8:  newHundredOp(),
-		op9:  newHundredOp(),
-		op10: newHundredOp(),
+// NewThousandOp returns a new ThousandOp.
+func NewThousandOp() *ThousandOp {
+	o := &ThousandOp{
+		op1:  NewHundredOp(),
+		op2:  NewHundredOp(),
+		op3:  NewHundredOp(),
+		op4:  NewHundredOp(),
+		op5:  NewHundredOp(),
+		op6:  NewHundredOp(),
+		op7:  NewHundredOp(),
+		op8:  NewHundredOp(),
+		op9:  NewHundredOp(),
+		op10: NewHundredOp(),
 	}
 	o.InPort = o.op1.InPort
 
@@ -56,10 +47,14 @@ func newThousandOp() *thousandOp {
 
 	return o
 }
-func (op *thousandOp) SetOutPort(port func(int)) {
+
+// SetOutPort sets the output port of the ThousandOp.
+func (op *ThousandOp) SetOutPort(port func(int)) {
 	op.op10.SetOutPort(port)
 }
-func (op *thousandOp) SetErrorPort(port func(error)) {
+
+// SetErrorPort sets the error port of the ThousandOp.
+func (op *ThousandOp) SetErrorPort(port func(error)) {
 	op.op1.SetErrorPort(port)
 	op.op2.SetErrorPort(port)
 	op.op3.SetErrorPort(port)
@@ -72,7 +67,8 @@ func (op *thousandOp) SetErrorPort(port func(error)) {
 	op.op10.SetErrorPort(port)
 }
 
-type hundredOp struct {
+// HundredOp holds the data necessary to call ten tenOps.
+type HundredOp struct {
 	InPort func(int)
 	op1    *tenOp
 	op2    *tenOp
@@ -86,8 +82,9 @@ type hundredOp struct {
 	op10   *tenOp
 }
 
-func newHundredOp() *hundredOp {
-	o := &hundredOp{
+// NewHundredOp returns a new HundredOp.
+func NewHundredOp() *HundredOp {
+	o := &HundredOp{
 		op1:  newTenOp(),
 		op2:  newTenOp(),
 		op3:  newTenOp(),
@@ -113,10 +110,14 @@ func newHundredOp() *hundredOp {
 
 	return o
 }
-func (op *hundredOp) SetOutPort(port func(int)) {
+
+// SetOutPort sets the output port of the HundredOp.
+func (op *HundredOp) SetOutPort(port func(int)) {
 	op.op10.SetOutPort(port)
 }
-func (op *hundredOp) SetErrorPort(port func(error)) {
+
+// SetErrorPort sets the error port of the HundredOp.
+func (op *HundredOp) SetErrorPort(port func(error)) {
 	op.op1.SetErrorPort(port)
 	op.op2.SetErrorPort(port)
 	op.op3.SetErrorPort(port)
