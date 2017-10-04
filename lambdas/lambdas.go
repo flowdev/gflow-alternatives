@@ -5,7 +5,7 @@ import (
 )
 
 // NewThousandOp returns an operation that calls singleOp a thousand times via
-// hundresOp and tenOp.
+// hundredOp and tenOp.
 func NewThousandOp(out func(int), handleError func(error)) (in func(int)) {
 	op10 := NewHundredOp(out, handleError)
 	op9 := NewHundredOp(op10, handleError)
