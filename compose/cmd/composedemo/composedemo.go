@@ -1,91 +1,62 @@
+/*This is really the exact same code as for the classic demo as there is
+nothing that can be composed.
+*/
 package main
 
 import "fmt"
 
 func main() {
-	flow := newFlow(func(err error) {
-		fmt.Printf("ERROR: %s\n", err)
-	})
 	for i := 1; i < 20; i++ {
-		flow(i)
-	}
-}
-
-func newFlow(handleError func(error)) func(int) {
-	opZuIn, opZlIn := newLastOp()
-	opLIn := newLowerOp(opZlIn, handleError)
-	opUIn := newUpperOp(opZuIn, handleError)
-	op1In := newFirstOp(opUIn, opLIn, handleError)
-
-	return op1In
-}
-func newFirstOp(upperOp, lowerOp func(int), handleError func(error)) func(int) {
-	return func(i int) {
-		err := failUtil(i)
+		err := firstOp(i)
 		if err != nil {
-			handleError(err)
-			return
-		}
-		if (i & 1) != 0 {
-			upperOp(i)
-		} else {
-			lowerOp(i)
+			fmt.Printf("ERROR: %s\n", err)
 		}
 	}
 }
 
-func newUpperOp(outOp func(int), handleError func(error)) func(int) {
-	return func(i int) {
-		fmt.Printf("Going upper: %d\n", i)
-		err := failUtil(i)
-		if err != nil {
-			handleError(err)
-			return
-		}
-		i++ // do own work
-		outOp(i)
+func firstOp(i int) error {
+	err := failUtil(i)
+	if err != nil {
+		return err
 	}
+	if (i & 1) != 0 {
+		return upperOp(i)
+	}
+	return lowerOp(i)
 }
 
-func newLowerOp(outOp func(int), handleError func(error)) func(int) {
-	return func(i int) {
-		fmt.Printf("Going lower: %d\n", i)
-		err := failUtil(i)
-		if err != nil {
-			handleError(err)
-			return
-		}
-		i-- // do own work
-		outOp(i)
+func upperOp(i int) error {
+	fmt.Printf("Going upper: %d\n", i)
+	err := failUtil(i)
+	if err != nil {
+		return err
 	}
+	i++ // do own work
+	lastUpperOp(i)
+	return nil
 }
 
-func newLastOp() (upperIn, lowerIn func(int)) {
-	internalFunc := func(i int) {
-		fmt.Printf("reached last op: %d\n", i)
+func lowerOp(i int) error {
+	fmt.Printf("Going lower: %d\n", i)
+	err := failUtil(i)
+	if err != nil {
+		return err
 	}
-	upperIn = func(i int) {
-		i-- // do some work
-		internalFunc(i)
-	}
-	lowerIn = func(i int) {
-		i++ // do some work
-		internalFunc(i)
-	}
-	return
+	i-- // do own work
+	lastLowerOp(i)
+	return nil
 }
 
-func compose(fs ...func(int) (int, error)) func(int) (int, error) {
-	return func(i int) (int, error) {
-		var err error
-		for _, f := range fs {
-			i, err = f(i)
-			if err != nil {
-				return 0, err
-			}
-		}
-		return i, nil
-	}
+func lastUpperOp(i int) {
+	i-- // do some work
+	lastOp(i)
+}
+func lastLowerOp(i int) {
+	i++ // do some work
+	lastOp(i)
+}
+func lastOp(i int) {
+	fmt.Printf("reached last op: %d\n", i)
 }
 
 var failNumber, failCount int

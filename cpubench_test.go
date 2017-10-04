@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/flowdev/gflow-alternatives/classic"
+	"github.com/flowdev/gflow-alternatives/compose"
 	"github.com/flowdev/gflow-alternatives/lambdas"
 	"github.com/flowdev/gflow-alternatives/oopmix"
 	"github.com/flowdev/gflow-alternatives/rets"
@@ -13,6 +14,13 @@ import (
 func BenchmarkClassic1000(b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		classic.ThousandOp(0)
+	}
+}
+
+// BenchmarkCompose1000 benchmarks the implementation of the thousandOp that uses compose.
+func BenchmarkCompose1000(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		compose.ThousandOp(0)
 	}
 }
 
