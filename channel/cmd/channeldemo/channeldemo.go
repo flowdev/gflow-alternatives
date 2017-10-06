@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"sync"
+	"io"
 )
 
 func main() {
@@ -43,28 +43,24 @@ func newFlow() *flow {
 	op12L := make(chan int, 10)
 	opU2Z := make(chan int, 10)
 	opL2Z := make(chan int, 10)
-	op12Err := make(chan error, 10)
-	opU2Err := make(chan error, 10)
-	opL2Err := make(chan error, 10)
+	opX2Err := make(chan error, 10)
 
 	f.op1.Upper = op12U
 	f.op1.Lower = op12L
-	f.op1.Error = op12Err
+	f.op1.Error = opX2Err
 
 	f.opU.In = op12U
 	f.opU.Out = opU2Z
-	f.opU.Error = opU2Err
+	f.opU.Error = opX2Err
 
 	f.opL.In = op12L
 	f.opL.Out = opL2Z
-	f.opL.Error = opL2Err
+	f.opL.Error = opX2Err
 
 	f.opZ.UpperIn = opU2Z
 	f.opZ.LowerIn = opL2Z
 
-	f.opErr.Error1 = op12Err
-	f.opErr.Error2 = opU2Err
-	f.opErr.Error3 = opL2Err
+	f.opErr.Error = opX2Err
 
 	return f
 }
@@ -76,7 +72,7 @@ func (f *flow) SetDone(port chan<- bool) {
 	f.opErr.Done = port
 }
 func (f *flow) Run() {
-	f.opErr.Run()
+	f.opErr.Run(3)
 	f.opZ.RunUpperIn()
 	f.opZ.RunLowerIn()
 	f.opU.Run()
@@ -98,7 +94,7 @@ func (op *firstOp) Run() {
 			if !ok {
 				close(op.Upper)
 				close(op.Lower)
-				close(op.Error)
+				op.Error <- io.EOF // signal that we are done
 				return
 			}
 			err := failUtil(i)
@@ -127,7 +123,7 @@ func (op *upperOp) Run() {
 			i, ok := <-op.In
 			if !ok {
 				close(op.Out)
-				close(op.Error)
+				op.Error <- io.EOF // signal that we are done
 				return
 			}
 			fmt.Printf("Going upper: %d\n", i)
@@ -154,7 +150,7 @@ func (op *lowerOp) Run() {
 			i, ok := <-op.In
 			if !ok {
 				close(op.Out)
-				close(op.Error)
+				op.Error <- io.EOF // signal that we are done
 				return
 			}
 			fmt.Printf("Going lower: %d\n", i)
@@ -206,47 +202,26 @@ func (op *lastOp) internalFunc(i int) {
 }
 
 type errorOp struct {
-	Error1 <-chan error
-	Error2 <-chan error
-	Error3 <-chan error
-	Done   chan<- bool
+	Error <-chan error
+	Done  chan<- bool
 }
 
-func (op *errorOp) Run() {
-	in := mergeErrors(op.Error1, op.Error2, op.Error3)
+func (op *errorOp) Run(n int) {
+	i := 0
 
 	go func() {
-		for err := range in {
-			fmt.Printf("ERROR: %s\n", err)
+		for err := range op.Error {
+			if err != io.EOF {
+				fmt.Printf("ERROR: %s\n", err)
+			} else {
+				i++
+				if i >= n {
+					break
+				}
+			}
 		}
 		op.Done <- true
 	}()
-}
-
-func mergeErrors(cs ...<-chan error) <-chan error {
-	var wg sync.WaitGroup
-	out := make(chan error)
-
-	// Start an output goroutine for each input channel in cs.  output
-	// copies values from c to out until c is closed, then calls wg.Done.
-	output := func(c <-chan error) {
-		for n := range c {
-			out <- n
-		}
-		wg.Done()
-	}
-	wg.Add(len(cs))
-	for _, c := range cs {
-		go output(c)
-	}
-
-	// Start a goroutine to close out once all the output goroutines are
-	// done.  This must start after the wg.Add call.
-	go func() {
-		wg.Wait()
-		close(out)
-	}()
-	return out
 }
 
 var failNumber, failCount int
