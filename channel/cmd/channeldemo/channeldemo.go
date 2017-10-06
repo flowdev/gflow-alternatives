@@ -23,20 +23,20 @@ func main() {
 }
 
 type flow struct {
-	op1   firstOp
-	opU   upperOp
-	opL   lowerOp
-	opZ   lastOp
-	opErr errorOp
+	op1   *firstOp
+	opU   *upperOp
+	opL   *lowerOp
+	opZ   *lastOp
+	opErr *errorOp
 }
 
 func newFlow() *flow {
 	f := &flow{
-		op1:   firstOp{},
-		opU:   upperOp{},
-		opL:   lowerOp{},
-		opZ:   lastOp{},
-		opErr: errorOp{},
+		op1:   &firstOp{},
+		opU:   &upperOp{},
+		opL:   &lowerOp{},
+		opZ:   &lastOp{},
+		opErr: &errorOp{},
 	}
 
 	op12U := make(chan int, 10)
