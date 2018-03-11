@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/flowdev/gflow-alternatives/util"
+)
 
 func main() {
 	for i := 1; i < 20; i++ {
@@ -12,7 +16,7 @@ func main() {
 }
 
 func firstOp(i int) error {
-	err := failUtil(i)
+	err := util.FailUtil(i)
 	if err != nil {
 		return err
 	}
@@ -24,7 +28,7 @@ func firstOp(i int) error {
 
 func upperOp(i int) error {
 	fmt.Printf("Going upper: %d\n", i)
-	err := failUtil(i)
+	err := util.FailUtil(i)
 	if err != nil {
 		return err
 	}
@@ -35,7 +39,7 @@ func upperOp(i int) error {
 
 func lowerOp(i int) error {
 	fmt.Printf("Going lower: %d\n", i)
-	err := failUtil(i)
+	err := util.FailUtil(i)
 	if err != nil {
 		return err
 	}
@@ -54,19 +58,4 @@ func lastLowerOp(i int) {
 }
 func lastOp(i int) {
 	fmt.Printf("reached last op: %d\n", i)
-}
-
-var failNumber, failCount int
-
-func failUtil(i int) error {
-	if failNumber != i {
-		failNumber = i
-		failCount = 0
-	}
-	failCount++
-
-	if failCount == (i % 3) {
-		return fmt.Errorf("Its time for an error: %d", i)
-	}
-	return nil
 }
